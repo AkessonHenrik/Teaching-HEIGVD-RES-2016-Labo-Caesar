@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Henrik on 23.03.2016.
+ * Created by Richoz & Akesson
  */
 public class ReceptionistWorker implements Runnable {
     private static final Logger LOG = Logger.getLogger(CaesarServer.class.getName());

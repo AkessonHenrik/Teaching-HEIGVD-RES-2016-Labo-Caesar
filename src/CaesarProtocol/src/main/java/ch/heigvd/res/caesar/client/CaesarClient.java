@@ -3,11 +3,7 @@ package ch.heigvd.res.caesar.client;
 import ch.heigvd.res.caesar.protocol.Protocol;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -15,14 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Olivier Liechti (olivier.liechti@heig-vd.ch)
+ * Created by Richoz & Akesson
  */
 public class CaesarClient {
 
     private static final Logger LOG = Logger.getLogger(CaesarClient.class.getName());
 
-    Protocol protocol;
     Socket clientSocket;
     InputStream in;
     OutputStream out;
@@ -74,22 +68,19 @@ public class CaesarClient {
     /**
      * Read the data sent from the server. The data is
      *
-     * @param messageReceived is the decoded message received from the server
      */
-    public void read(String messageReceived) {
-        byte[] encodedMessage = null;
+    public String read() throws UnsupportedEncodingException {
+        byte[] encodedMessage = new byte[Protocol.BUFFER_SIZE];
 
         try {
             in.read(encodedMessage);
+            if(Protocol.getDecodedMessage(encodedMessage).equalsIgnoreCase("bye"))
+                disconnect();
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
 
-        try {
-            messageReceived = Protocol.getDecodedMessage(encodedMessage);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(CaesarClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            return Protocol.getDecodedMessage(encodedMessage);
     }
 
     public void disconnect() {
@@ -144,16 +135,24 @@ public class CaesarClient {
         CaesarClient client = new CaesarClient();
         String messageReceived = null;
         client.connect("localhost", Protocol.PORT);
-
+        try {
+            messageReceived = client.read();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        LOG.info(messageReceived);
         while (client.isConnected()) {
             Scanner sc = new Scanner(System.in);
             // Write his message for the server
             System.out.println("Write your message for Caesar : ");
             // Empty the line before reading another one
-            sc.nextLine();
             String str = sc.nextLine();
             client.write(str);
-            client.read(messageReceived);
+            try {
+                messageReceived = client.read();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             System.out.println("Message received from Caesar : " + messageReceived);
         }
 

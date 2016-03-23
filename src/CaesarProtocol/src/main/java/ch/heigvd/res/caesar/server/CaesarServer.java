@@ -1,19 +1,10 @@
 package ch.heigvd.res.caesar.server;
 
-import ch.heigvd.res.caesar.client.*;
 import ch.heigvd.res.caesar.protocol.Protocol;
-import com.sun.org.apache.regexp.internal.RE;
-
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Arrays;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Olivier Liechti (olivier.liechti@heig-vd.ch)
- * modified by: Henrik Akesson
+ * Created by Richoz & Akesson
  */
 public class CaesarServer {
 
@@ -23,23 +14,6 @@ public class CaesarServer {
     private CaesarServer() {
         this.port = Protocol.PORT;
     }
-
-
-    public void serveClients() {
-        LOG.info("Starting the Receptionist Worker on a new thread...");
-        new Thread(new ReceptionistWorker()).start();
-    }
-
-    /**
-     * This inner class implements the behavior of the "receptionist", whose
-     * responsibility is to listen for incoming connection requests. As soon as a
-     * new client has arrived, the receptionist delegates the processing to a
-     * "servant" who will execute on its own thread.
-     */
-
-
-
-
 
     /**
      * @param args the command line arguments

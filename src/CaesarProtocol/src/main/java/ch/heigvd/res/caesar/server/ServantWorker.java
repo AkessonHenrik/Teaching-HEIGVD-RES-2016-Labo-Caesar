@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Henrik on 23.03.2016.
+ * Created by Richoz & Akesson
  */
 public class ServantWorker implements Runnable {
     private static final Logger LOG = Logger.getLogger(CaesarServer.class.getName());
@@ -34,15 +33,10 @@ public class ServantWorker implements Runnable {
     public void run() {
         Protocol message;
         String messageString;
-        byte[] receivedMessage = null;
+        byte[] receivedMessage = new byte[Protocol.BUFFER_SIZE];
         boolean shouldRun = true;
 
-        try {
-            out.write(new Protocol("Ave").getEncodedMessage());
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         try {
             LOG.info("Reading until client sends BYE or closes the connection...");
             while ((shouldRun) && (in.read(receivedMessage)) != -1) {
@@ -52,7 +46,6 @@ public class ServantWorker implements Runnable {
                     message = new Protocol("bye");
                 } else {
                     message = new Protocol(messageString);
-                    LOG.info("The received encoded message is: " + new String(Arrays.copyOfRange(receivedMessage, 1, receivedMessage.length), "UTF-8"));
                     LOG.info("The received decoded message is: " + messageString);
                 }
                 out.write(message.getEncodedMessage());
