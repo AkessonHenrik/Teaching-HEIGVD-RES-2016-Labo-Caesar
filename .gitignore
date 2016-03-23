@@ -117,3 +117,6 @@ local.properties
 
 # Code Recommenders
 .recommenders/
+*.name
+.idea/compiler.xml
+*.xml
